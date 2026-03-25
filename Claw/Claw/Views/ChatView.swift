@@ -17,6 +17,12 @@ struct ChatView: View {
                                 ChatBubbleView(message: message, voiceManager: voiceManager)
                                     .id(message.id)
                             }
+
+                            if viewModel.isLoading {
+                                LoadingBubbleView()
+                                    .id("loading-indicator")
+                                    .transition(.opacity)
+                            }
                         }
                         .padding(.horizontal)
                         .padding(.top, 8)
@@ -28,6 +34,13 @@ struct ChatView: View {
                         if let last = viewModel.messages.last {
                             withAnimation(.easeOut(duration: 0.2)) {
                                 proxy.scrollTo(last.id, anchor: .bottom)
+                            }
+                        }
+                    }
+                    .onChange(of: viewModel.isLoading) { _, isLoading in
+                        if isLoading {
+                            withAnimation(.easeOut(duration: 0.2)) {
+                                proxy.scrollTo("loading-indicator", anchor: .bottom)
                             }
                         }
                     }

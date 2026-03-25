@@ -7,20 +7,36 @@ struct ClawApp: App {
     @StateObject private var locationManager = LocationManager()
     @StateObject private var chatViewModel = ChatViewModel()
     @StateObject private var notificationsViewModel = NotificationsViewModel()
+    @State private var showSplash = true
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(locationManager)
-                .environmentObject(chatViewModel)
-                .environmentObject(notificationsViewModel)
-                .onAppear {
-                    chatViewModel.locationManager = locationManager
-                    locationManager.startLocationRequestPolling()
-                    NotificationManager.shared.requestAuthorization()
-                    UIApplication.shared.registerForRemoteNotifications()
-                    Task { await notificationsViewModel.fetchNotifications() }
+            ZStack {
+                ContentView()
+                    .environmentObject(locationManager)
+                    .environmentObject(chatViewModel)
+                    .environmentObject(notificationsViewModel)
+                    .onAppear {
+                        chatViewModel.locationManager = locationManager
+                        locationManager.startLocationRequestPolling()
+                        NotificationManager.shared.requestAuthorization()
+                        UIApplication.shared.registerForRemoteNotifications()
+                        Task { await notificationsViewModel.fetchNotifications() }
+                    }
+
+                if showSplash {
+                    SplashView()
+                        .transition(.opacity)
+                        .zIndex(1)
                 }
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                    withAnimation(.easeOut(duration: 0.4)) {
+                        showSplash = false
+                    }
+                }
+            }
         }
     }
 }
