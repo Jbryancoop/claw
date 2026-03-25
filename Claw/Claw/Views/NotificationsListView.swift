@@ -12,19 +12,24 @@ struct NotificationsListView: View {
                         "No Notifications",
                         systemImage: "bell.slash",
                         description: Text("Notifications from the server will appear here.")
+                            .foregroundStyle(ClawTheme.textSecondary)
                     )
+                    .foregroundStyle(ClawTheme.textSecondary)
+                    .background(ClawTheme.background)
                 } else {
                     List {
                         ForEach(viewModel.notifications) { item in
                             NavigationLink(value: item.id) {
                                 NotificationRowView(item: item)
                             }
+                            .listRowBackground(ClawTheme.surface)
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     viewModel.delete(item.id)
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
+                                .tint(ClawTheme.destructive)
                             }
                             .swipeActions(edge: .trailing) {
                                 Button {
@@ -39,10 +44,12 @@ struct NotificationsListView: View {
                                         systemImage: item.isRead ? "envelope.badge" : "envelope.open"
                                     )
                                 }
-                                .tint(.blue)
+                                .tint(ClawTheme.accent)
                             }
                         }
                     }
+                    .scrollContentBackground(.hidden)
+                    .background(ClawTheme.background)
                     .navigationDestination(for: String.self) { id in
                         if let item = viewModel.notifications.first(where: { $0.id == id }) {
                             NotificationDetailView(item: item)
@@ -86,23 +93,24 @@ private struct NotificationRowView: View {
     var body: some View {
         HStack(spacing: 10) {
             Circle()
-                .fill(item.isRead ? .clear : .blue)
+                .fill(item.isRead ? .clear : ClawTheme.unread)
                 .frame(width: 8, height: 8)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.title)
                     .font(.headline)
                     .fontWeight(item.isRead ? .regular : .semibold)
+                    .foregroundStyle(ClawTheme.textPrimary)
                     .lineLimit(1)
 
                 Text(markdownPlainText(item.body))
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(ClawTheme.textSecondary)
                     .lineLimit(2)
 
                 Text(item.timestamp, style: .relative)
                     .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(ClawTheme.textTertiary)
             }
         }
         .padding(.vertical, 2)

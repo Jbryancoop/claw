@@ -48,37 +48,47 @@ struct ChatView: View {
                     } label: {
                         Image(systemName: voiceManager.isListening ? "mic.fill" : "mic")
                             .font(.title3)
-                            .foregroundStyle(voiceManager.isListening ? .red : .blue)
+                            .foregroundStyle(voiceManager.isListening ? .red : ClawTheme.accent)
                     }
 
                     TextField(voiceManager.isListening ? "Listening..." : "Send a command...", text: $inputText, axis: .vertical)
                         .textFieldStyle(.plain)
+                        .foregroundStyle(ClawTheme.textPrimary)
                         .lineLimit(1...4)
                         .focused($isInputFocused)
                         .onSubmit { send() }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Color(.systemGray6))
+                        .background(ClawTheme.surfaceElevated)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .tint(ClawTheme.accent)
 
                     Button(action: send) {
                         Image(systemName: "arrow.up.circle.fill")
                             .font(.title2)
-                            .foregroundStyle(canSend ? .blue : .gray)
+                            .foregroundStyle(canSend ? ClawTheme.accent : ClawTheme.textTertiary)
                     }
                     .disabled(!canSend)
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 8)
-                .background(.bar)
+                .background(
+                    VStack(spacing: 0) {
+                        ClawTheme.border.frame(height: 0.5)
+                        Spacer()
+                    }
+                    .background(ClawTheme.surface)
+                )
                 .onChange(of: voiceManager.transcript) { _, newValue in
                     if voiceManager.isListening {
                         inputText = newValue
                     }
                 }
             }
+            .background(ClawTheme.background)
             .navigationTitle("Claw")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {

@@ -31,18 +31,21 @@ struct MarkdownView: View {
             HStack(alignment: .top, spacing: 6) {
                 Text("•")
                     .font(baseFont)
+                    .foregroundStyle(ClawTheme.accent)
                 inlineText(text)
                     .font(baseFont)
             }
         case .horizontalRule:
             Divider()
+                .overlay(ClawTheme.border)
                 .padding(.vertical, 4)
         case .codeBlock(let code):
             Text(code)
                 .font(.system(.callout, design: .monospaced))
+                .foregroundStyle(ClawTheme.accentBright)
                 .padding(10)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemGray6))
+                .background(ClawTheme.surfaceElevated)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         case .blank:
             Spacer().frame(height: 4)
@@ -53,6 +56,7 @@ struct MarkdownView: View {
     private func headingView(level: Int, text: String) -> some View {
         inlineText(text)
             .font(level == 1 ? .title2.bold() : level == 2 ? .title3.bold() : .headline)
+            .foregroundStyle(ClawTheme.accent)
             .padding(.top, level == 1 ? 4 : 2)
     }
 
@@ -64,15 +68,15 @@ struct MarkdownView: View {
         while !remaining.isEmpty {
             if remaining.hasPrefix("**"), let endIdx = remaining.dropFirst(2).range(of: "**")?.lowerBound {
                 let content = remaining[remaining.index(remaining.startIndex, offsetBy: 2)..<endIdx]
-                result = result + Text(String(content)).bold()
+                result = result + Text(String(content)).bold().foregroundColor(ClawTheme.textPrimary)
                 remaining = remaining[remaining.index(endIdx, offsetBy: 2)...]
             } else if remaining.hasPrefix("*"), let endIdx = remaining.dropFirst(1).range(of: "*")?.lowerBound {
                 let content = remaining[remaining.index(remaining.startIndex, offsetBy: 1)..<endIdx]
-                result = result + Text(String(content)).italic()
+                result = result + Text(String(content)).italic().foregroundColor(ClawTheme.textSecondary)
                 remaining = remaining[remaining.index(endIdx, offsetBy: 1)...]
             } else if remaining.hasPrefix("`"), let endIdx = remaining.dropFirst(1).range(of: "`")?.lowerBound {
                 let content = remaining[remaining.index(remaining.startIndex, offsetBy: 1)..<endIdx]
-                result = result + Text(String(content)).font(.system(.body, design: .monospaced)).foregroundColor(.secondary)
+                result = result + Text(String(content)).font(.system(.body, design: .monospaced)).foregroundColor(ClawTheme.accentBright)
                 remaining = remaining[remaining.index(endIdx, offsetBy: 1)...]
             } else {
                 // Consume up to next special character

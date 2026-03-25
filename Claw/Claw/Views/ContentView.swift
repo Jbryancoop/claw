@@ -35,6 +35,8 @@ struct ContentView: View {
                 }
                 .tag(AppTab.dev)
         }
+        .tint(ClawTheme.accent)
+        .preferredColorScheme(.dark)
         .onReceive(NotificationCenter.default.publisher(for: .didReceiveClawNotification)) { notification in
             let userInfo = notification.userInfo ?? [:]
             let type = userInfo["type"] as? String

@@ -30,6 +30,7 @@
 		A10023 /* DevModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10023 /* DevModels.swift */; };
 		A10024 /* DevViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10024 /* DevViewModel.swift */; };
 		A10025 /* DevView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10025 /* DevView.swift */; };
+		A10026 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10026 /* Theme.swift */; };
 		A10020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10020 /* Assets.xcassets */; };
 		A10021 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B10021 /* Settings.bundle */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,7 @@
 		B10023 /* DevModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevModels.swift; sourceTree = "<group>"; };
 		B10024 /* DevViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevViewModel.swift; sourceTree = "<group>"; };
 		B10025 /* DevView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevView.swift; sourceTree = "<group>"; };
+		B10026 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		B10020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10021 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		B10030 /* Claw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Claw.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				B10003 /* ServerConfig.swift */,
+				B10026 /* Theme.swift */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				A10023 /* DevModels.swift in Sources */,
 				A10024 /* DevViewModel.swift in Sources */,
 				A10025 /* DevView.swift in Sources */,
+				A10026 /* Theme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

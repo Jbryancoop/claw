@@ -13,6 +13,7 @@ struct DevView: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .tint(ClawTheme.accent)
                 .padding(.horizontal)
                 .padding(.top, 8)
 
@@ -26,6 +27,7 @@ struct DevView: View {
                     chatsView
                 }
             }
+            .background(ClawTheme.background)
             .navigationTitle("Developer")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -51,9 +53,10 @@ struct DevView: View {
             // Search bar
             HStack {
                 Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(ClawTheme.textTertiary)
                 TextField("Filter logs...", text: $viewModel.searchText)
                     .textFieldStyle(.plain)
+                    .foregroundStyle(ClawTheme.textPrimary)
                     .onSubmit { Task { await viewModel.fetchLogs() } }
                 if !viewModel.searchText.isEmpty {
                     Button {
@@ -61,20 +64,20 @@ struct DevView: View {
                         Task { await viewModel.fetchLogs() }
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(ClawTheme.textTertiary)
                     }
                 }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(Color(.systemGray6))
+            .background(ClawTheme.surfaceElevated)
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal)
             .padding(.top, 8)
 
             Text("\(viewModel.totalLogs) total entries")
                 .font(.caption2)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(ClawTheme.textTertiary)
                 .padding(.top, 4)
 
             List(viewModel.logs) { entry in
@@ -83,21 +86,25 @@ struct DevView: View {
                         Text(entry.message)
                             .font(.system(.caption, design: .monospaced))
                             .fontWeight(.medium)
+                            .foregroundStyle(ClawTheme.accent)
                             .lineLimit(1)
                         Spacer()
                         Text(formatTimestamp(entry.timestamp))
                             .font(.system(.caption2, design: .monospaced))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(ClawTheme.textTertiary)
                     }
                     if let data = entry.data, !data.isEmpty {
                         Text(data)
                             .font(.system(.caption2, design: .monospaced))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(ClawTheme.textSecondary)
                             .lineLimit(3)
                     }
                 }
                 .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                .listRowBackground(ClawTheme.surface)
             }
+            .scrollContentBackground(.hidden)
+            .background(ClawTheme.background)
             .listStyle(.plain)
             .refreshable { await viewModel.fetchLogs() }
         }
@@ -115,14 +122,17 @@ struct DevView: View {
                     statRow("Logs", value: "\(s.logs ?? 0)")
                     statRow("Device Tokens", value: "\(s.deviceTokens ?? 0)")
                 }
+                .listRowBackground(ClawTheme.surface)
                 Section("Server") {
                     statRow("Uptime", value: formatUptime(s.uptime ?? 0))
                     statRow("Database Size", value: formatBytes(s.dbSizeBytes ?? 0))
                 }
+                .listRowBackground(ClawTheme.surface)
                 Section("Activity") {
                     statRow("Last Location", value: s.lastLocationAt.map { formatTimestamp($0) } ?? "—")
                     statRow("Last Chat", value: s.lastChatAt.map { formatTimestamp($0) } ?? "—")
                 }
+                .listRowBackground(ClawTheme.surface)
             } else {
                 Section {
                     ProgressView()
@@ -130,6 +140,8 @@ struct DevView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ClawTheme.background)
         .refreshable { await viewModel.fetchStats() }
     }
 
@@ -142,23 +154,31 @@ struct DevView: View {
                     Text(chat.role == "user" ? "You" : "Larry")
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundStyle(chat.role == "user" ? .blue : .orange)
+                        .foregroundStyle(chat.role == "user" ? ClawTheme.accent : ClawTheme.accentBright)
                     Spacer()
                     Text(formatTimestamp(chat.timestamp))
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(ClawTheme.textTertiary)
                 }
                 Text(chat.content)
                     .font(.system(.caption, design: .default))
+                    .foregroundStyle(ClawTheme.textPrimary)
                     .lineLimit(6)
                 if let lat = chat.locationLat, let lon = chat.locationLon {
-                    Text("📍 \(String(format: "%.4f", lat)), \(String(format: "%.4f", lon))")
-                        .font(.system(.caption2, design: .monospaced))
-                        .foregroundStyle(.tertiary)
+                    HStack(spacing: 2) {
+                        Image(systemName: "mappin")
+                            .foregroundStyle(ClawTheme.textTertiary)
+                        Text("\(String(format: "%.4f", lat)), \(String(format: "%.4f", lon))")
+                            .foregroundStyle(ClawTheme.textTertiary)
+                    }
+                    .font(.system(.caption2, design: .monospaced))
                 }
             }
             .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+            .listRowBackground(ClawTheme.surface)
         }
+        .scrollContentBackground(.hidden)
+        .background(ClawTheme.background)
         .listStyle(.plain)
         .refreshable { await viewModel.fetchChats() }
     }
@@ -169,15 +189,17 @@ struct DevView: View {
     private func statRow(_ label: String, value: String, detail: String? = nil) -> some View {
         HStack {
             Text(label)
+                .foregroundStyle(ClawTheme.textPrimary)
             Spacer()
             if let detail {
                 Text(detail)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(ClawTheme.textSecondary)
             }
             Text(value)
                 .fontWeight(.medium)
                 .monospacedDigit()
+                .foregroundStyle(ClawTheme.accent)
         }
     }
 

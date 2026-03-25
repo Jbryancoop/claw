@@ -22,8 +22,8 @@ struct ChatBubbleView: View {
                 .textSelection(.enabled)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(isUser ? Color.blue : Color(.systemGray5))
-                .foregroundStyle(isUser ? .white : .primary)
+                .background(isUser ? ClawTheme.userBubble : ClawTheme.serverBubble)
+                .foregroundStyle(ClawTheme.textPrimary)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                     .contextMenu {
                         Button {
@@ -49,7 +49,7 @@ struct ChatBubbleView: View {
                                 .font(.caption)
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 4)
-                                .background(.ultraThinMaterial)
+                                .background(ClawTheme.surface)
                                 .clipShape(Capsule())
                                 .transition(.opacity)
                         }
@@ -58,7 +58,7 @@ struct ChatBubbleView: View {
 
                 Text(message.timestamp, style: .time)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(ClawTheme.textTertiary)
                     .padding(.horizontal, 4)
             }
 

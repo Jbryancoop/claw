@@ -10,6 +10,7 @@ struct NotificationDetailView: View {
                 Text(item.title)
                     .font(.title2)
                     .fontWeight(.bold)
+                    .foregroundStyle(ClawTheme.textPrimary)
 
                 HStack {
                     Text(item.timestamp, style: .date)
@@ -17,15 +18,18 @@ struct NotificationDetailView: View {
                     Text(item.timestamp, style: .time)
                 }
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(ClawTheme.textSecondary)
 
                 Divider()
+                    .overlay(ClawTheme.border)
 
                 MarkdownView(item.body)
+                    .foregroundStyle(ClawTheme.textPrimary)
                     .textSelection(.enabled)
             }
             .padding()
         }
+        .background(ClawTheme.background)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

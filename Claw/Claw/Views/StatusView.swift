@@ -11,48 +11,84 @@ struct StatusView: View {
         NavigationStack {
             List {
                 // Server
-                Section("Server") {
-                    LabeledContent("URL", value: ServerConfig.baseURL.absoluteString)
+                Section {
+                    LabeledContent {
+                        Text(ServerConfig.baseURL.absoluteString)
+                            .foregroundStyle(ClawTheme.textSecondary)
+                    } label: {
+                        Text("URL")
+                            .foregroundStyle(ClawTheme.textPrimary)
+                    }
 
                     HStack {
                         Text("Connection")
+                            .foregroundStyle(ClawTheme.textPrimary)
                         Spacer()
                         statusDot(for: serverStatus)
                         Text(serverStatus.label)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(ClawTheme.textSecondary)
                     }
 
                     Button("Test Connection") {
                         Task { await testConnection() }
                     }
+                    .foregroundStyle(ClawTheme.accent)
                     .disabled(isTestingConnection)
+                } header: {
+                    Text("Server")
+                        .foregroundStyle(ClawTheme.accent)
                 }
 
                 // Location
-                Section("Location") {
+                Section {
                     HStack {
                         Text("Permission")
+                            .foregroundStyle(ClawTheme.textPrimary)
                         Spacer()
                         statusDot(for: locationManager.authorizationStatus.isAuthorized)
                         Text(locationManager.authorizationStatus.displayName)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(ClawTheme.textSecondary)
                     }
 
                     if let loc = locationManager.lastLocation {
-                        LabeledContent("Latitude", value: String(format: "%.5f", loc.coordinate.latitude))
-                        LabeledContent("Longitude", value: String(format: "%.5f", loc.coordinate.longitude))
+                        LabeledContent {
+                            Text(String(format: "%.5f", loc.coordinate.latitude))
+                                .foregroundStyle(ClawTheme.textSecondary)
+                        } label: {
+                            Text("Latitude")
+                                .foregroundStyle(ClawTheme.textPrimary)
+                        }
+                        LabeledContent {
+                            Text(String(format: "%.5f", loc.coordinate.longitude))
+                                .foregroundStyle(ClawTheme.textSecondary)
+                        } label: {
+                            Text("Longitude")
+                                .foregroundStyle(ClawTheme.textPrimary)
+                        }
                     } else {
-                        LabeledContent("Position", value: "Unknown")
+                        LabeledContent {
+                            Text("Unknown")
+                                .foregroundStyle(ClawTheme.textSecondary)
+                        } label: {
+                            Text("Position")
+                                .foregroundStyle(ClawTheme.textPrimary)
+                        }
                     }
 
                     if let time = locationManager.lastUploadTime {
-                        LabeledContent("Last sent", value: time, format: .dateTime.hour().minute().second())
+                        LabeledContent {
+                            Text(time, format: .dateTime.hour().minute().second())
+                                .foregroundStyle(ClawTheme.textSecondary)
+                        } label: {
+                            Text("Last sent")
+                                .foregroundStyle(ClawTheme.textPrimary)
+                        }
                     }
 
                     if let error = locationManager.lastError {
                         Text(error)
                             .font(.caption)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(ClawTheme.destructive)
                     }
 
                     HStack {
@@ -63,41 +99,53 @@ struct StatusView: View {
                                 locationManager.startUpdating()
                             }
                         }
+                        .foregroundStyle(ClawTheme.accent)
 
                         Spacer()
 
                         Button("Send Now") {
                             locationManager.sendLocationNow()
                         }
+                        .foregroundStyle(ClawTheme.accent)
                         .disabled(locationManager.lastLocation == nil)
                     }
+                } header: {
+                    Text("Location")
+                        .foregroundStyle(ClawTheme.accent)
                 }
 
                 // Notifications
-                Section("Notifications") {
+                Section {
                     HStack {
                         Text("Permission")
+                            .foregroundStyle(ClawTheme.textPrimary)
                         Spacer()
                         statusDot(for: notificationManager.isAuthorized)
                         Text(notificationManager.isAuthorized ? "Granted" : "Not Granted")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(ClawTheme.textSecondary)
                     }
 
                     HStack {
                         Text("Token Registered")
+                            .foregroundStyle(ClawTheme.textPrimary)
                         Spacer()
                         statusDot(for: notificationManager.isTokenRegistered)
                         Text(notificationManager.isTokenRegistered ? "Yes" : "No")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(ClawTheme.textSecondary)
                     }
 
                     if let error = notificationManager.lastError {
                         Text(error)
                             .font(.caption)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(ClawTheme.destructive)
                     }
+                } header: {
+                    Text("Notifications")
+                        .foregroundStyle(ClawTheme.accent)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(ClawTheme.background)
             .navigationTitle("Status")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -108,7 +156,7 @@ struct StatusView: View {
     @ViewBuilder
     private func statusDot(for ok: Bool) -> some View {
         Circle()
-            .fill(ok ? .green : .red)
+            .fill(ok ? ClawTheme.accent : ClawTheme.destructive)
             .frame(width: 8, height: 8)
     }
 
@@ -146,9 +194,9 @@ private enum ServerStatusState {
 
     var color: Color {
         switch self {
-        case .unknown: return .gray
-        case .connected: return .green
-        case .error: return .red
+        case .unknown: return ClawTheme.textTertiary
+        case .connected: return ClawTheme.accent
+        case .error: return ClawTheme.destructive
         }
     }
 }
