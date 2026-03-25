@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 struct StatusView: View {
     @EnvironmentObject var locationManager: LocationManager

@@ -7,22 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10001 /* ClawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001; };
-		A10002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002; };
-		A10003 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10003; };
-		A10004 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10004; };
-		A10005 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10005; };
-		A10006 /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10006; };
-		A10007 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10007; };
-		A10008 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10008; };
-		A10009 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10009; };
-		A10010 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10010; };
-		A10011 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10011; };
-		A10012 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10012; };
-		A10013 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10013; };
-		A10014 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10014; };
-		A10020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10020; };
-		A10021 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B10021; };
+		A10001 /* ClawApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001 /* ClawApp.swift */; };
+		A10002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002 /* ContentView.swift */; };
+		A10003 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10003 /* ServerConfig.swift */; };
+		A10004 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10004 /* Message.swift */; };
+		A10005 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10005 /* Location.swift */; };
+		A10006 /* ServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10006 /* ServerResponse.swift */; };
+		A10007 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10007 /* APIClient.swift */; };
+		A10008 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10008 /* LocationManager.swift */; };
+		A10009 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10009 /* NotificationManager.swift */; };
+		A10010 /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10010 /* ChatService.swift */; };
+		A10011 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10011 /* ChatView.swift */; };
+		A10012 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10012 /* ChatBubbleView.swift */; };
+		A10013 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10013 /* StatusView.swift */; };
+		A10014 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10014 /* ChatViewModel.swift */; };
+		A10015 /* NotificationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10015 /* NotificationItem.swift */; };
+		A10016 /* NotificationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10016 /* NotificationsViewModel.swift */; };
+		A10017 /* NotificationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10017 /* NotificationsListView.swift */; };
+		A10018 /* NotificationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10018 /* NotificationDetailView.swift */; };
+		A10019 /* MarkdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10019 /* MarkdownView.swift */; };
+		A10022 /* VoiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10022 /* VoiceManager.swift */; };
+		A10023 /* DevModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10023 /* DevModels.swift */; };
+		A10024 /* DevViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10024 /* DevViewModel.swift */; };
+		A10025 /* DevView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10025 /* DevView.swift */; };
+		A10020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10020 /* Assets.xcassets */; };
+		A10021 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B10021 /* Settings.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +49,15 @@
 		B10012 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		B10013 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 		B10014 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		B10015 /* NotificationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationItem.swift; sourceTree = "<group>"; };
+		B10016 /* NotificationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewModel.swift; sourceTree = "<group>"; };
+		B10017 /* NotificationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsListView.swift; sourceTree = "<group>"; };
+		B10018 /* NotificationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDetailView.swift; sourceTree = "<group>"; };
+		B10019 /* MarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownView.swift; sourceTree = "<group>"; };
+		B10022 /* VoiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceManager.swift; sourceTree = "<group>"; };
+		B10023 /* DevModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevModels.swift; sourceTree = "<group>"; };
+		B10024 /* DevViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevViewModel.swift; sourceTree = "<group>"; };
+		B10025 /* DevView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevView.swift; sourceTree = "<group>"; };
 		B10020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10021 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		B10030 /* Claw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Claw.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -96,6 +114,8 @@
 				B10004 /* Message.swift */,
 				B10005 /* Location.swift */,
 				B10006 /* ServerResponse.swift */,
+				B10015 /* NotificationItem.swift */,
+				B10023 /* DevModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -107,6 +127,7 @@
 				B10008 /* LocationManager.swift */,
 				B10009 /* NotificationManager.swift */,
 				B10010 /* ChatService.swift */,
+				B10022 /* VoiceManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -118,6 +139,10 @@
 				B10011 /* ChatView.swift */,
 				B10012 /* ChatBubbleView.swift */,
 				B10013 /* StatusView.swift */,
+				B10017 /* NotificationsListView.swift */,
+				B10018 /* NotificationDetailView.swift */,
+				B10019 /* MarkdownView.swift */,
+				B10025 /* DevView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -126,6 +151,8 @@
 			isa = PBXGroup;
 			children = (
 				B10014 /* ChatViewModel.swift */,
+				B10016 /* NotificationsViewModel.swift */,
+				B10024 /* DevViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -152,7 +179,7 @@
 /* Begin PBXNativeTarget section */
 		E10001 /* Claw */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F10003;
+			buildConfigurationList = F10003 /* Build configuration list for PBXNativeTarget "Claw" */;
 			buildPhases = (
 				C10002 /* Sources */,
 				C10001 /* Frameworks */,
@@ -182,7 +209,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F10001;
+			buildConfigurationList = F10001 /* Build configuration list for PBXProject "Claw" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -231,6 +258,15 @@
 				A10012 /* ChatBubbleView.swift in Sources */,
 				A10013 /* StatusView.swift in Sources */,
 				A10014 /* ChatViewModel.swift in Sources */,
+				A10015 /* NotificationItem.swift in Sources */,
+				A10016 /* NotificationsViewModel.swift in Sources */,
+				A10017 /* NotificationsListView.swift in Sources */,
+				A10018 /* NotificationDetailView.swift in Sources */,
+				A10019 /* MarkdownView.swift in Sources */,
+				A10022 /* VoiceManager.swift in Sources */,
+				A10023 /* DevModels.swift in Sources */,
+				A10024 /* DevViewModel.swift in Sources */,
+				A10025 /* DevView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,16 +350,18 @@
 				CODE_SIGN_ENTITLEMENTS = Claw/Claw.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3FAZWN7F8L;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Claw/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Claw;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Claw sends your location to your openclaw server in the background so it always knows where you are.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Claw sends your location to your openclaw server so it knows where you are.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -331,6 +369,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jbryan.claw;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -345,16 +385,18 @@
 				CODE_SIGN_ENTITLEMENTS = Claw/Claw.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 3FAZWN7F8L;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Claw/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Claw;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Claw sends your location to your openclaw server in the background so it always knows where you are.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Claw sends your location to your openclaw server so it knows where you are.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -362,6 +404,8 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jbryan.claw;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -390,7 +434,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = E10002 /* Project object */;
 }

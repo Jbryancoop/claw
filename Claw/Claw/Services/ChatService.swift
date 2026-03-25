@@ -1,8 +1,8 @@
 import Foundation
 
 struct ChatService {
-    static func send(command: String) async throws -> String {
-        let response = try await APIClient.shared.sendCommand(command)
+    static func send(command: String, location: DeviceLocation? = nil) async throws -> String {
+        let response = try await APIClient.shared.sendCommand(command, location: location)
         if let error = response.error, !response.ok {
             throw ChatError.serverRejected(error)
         }

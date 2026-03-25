@@ -3,14 +3,16 @@ import Foundation
 struct ServerConfig {
     // MARK: - Server URL
 
+    private static let defaultBaseURL = "https://chedev.tailc8b91a.ts.net/api"
+    private static let defaultAPIToken = "wUk-4_b3nD_sAmmFyNAfJVFiZ9xzS68rF1GLiIQg5pQ"
+
     static var baseURL: URL {
         if let urlString = UserDefaults.standard.string(forKey: "server_url"),
            !urlString.isEmpty,
            let url = URL(string: urlString) {
             return url
         }
-        // Fallback for development — change to your server's address
-        return URL(string: "http://localhost:8080")!
+        return URL(string: defaultBaseURL)!
     }
 
     // MARK: - API Token
@@ -20,15 +22,25 @@ struct ServerConfig {
            !token.isEmpty {
             return token
         }
-        return ""
+        return defaultAPIToken
     }
 
     // MARK: - Endpoints
 
-    static var locationURL: URL { baseURL.appendingPathComponent("/api/location") }
-    static var deviceTokenURL: URL { baseURL.appendingPathComponent("/api/device-token") }
-    static var commandURL: URL { baseURL.appendingPathComponent("/api/command") }
-    static var statusURL: URL { baseURL.appendingPathComponent("/api/status") }
+    static var locationURL: URL { baseURL.appending(path: "api/location") }
+    static var deviceTokenURL: URL { baseURL.appending(path: "api/device-token") }
+    static var commandURL: URL { baseURL.appending(path: "api/command") }
+    static var statusURL: URL { baseURL.appending(path: "api/status") }
+    static var locationRequestURL: URL { baseURL.appending(path: "api/location/request") }
+    static var notificationsURL: URL { baseURL.appending(path: "api/notifications") }
+    static func notificationURL(id: String) -> URL { baseURL.appending(path: "api/notifications/\(id)") }
+    static var ttsURL: URL { baseURL.appending(path: "api/tts") }
+    static var logsURL: URL { baseURL.appending(path: "api/logs") }
+    static var statsURL: URL { baseURL.appending(path: "api/stats") }
+    static var chatsURL: URL { baseURL.appending(path: "api/chats") }
+
+    /// How often (seconds) the app polls the server for location requests.
+    static let locationRequestPollInterval: TimeInterval = 10.0
 
     // MARK: - Location Settings
 

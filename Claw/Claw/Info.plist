@@ -2,14 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Claw sends your location to your openclaw server so it knows where you are.</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Claw sends your location to your openclaw server in the background so it always knows where you are.</string>
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>location</string>
-        <string>remote-notification</string>
-    </array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>remote-notification</string>
+	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Claw uses the microphone for voice commands to Larry.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Claw uses speech recognition to transcribe your voice commands.</string>
 </dict>
 </plist>

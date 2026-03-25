@@ -79,6 +79,47 @@ final class LocationManager: NSObject, ObservableObject {
         Task { await uploadLocation(location, force: true) }
     }
 
+    // MARK: - Location Request Polling
+
+    private var pollTask: Task<Void, Never>?
+
+    func startLocationRequestPolling() {
+        guard pollTask == nil else { return }
+        pollTask = Task { [weak self] in
+            while !Task.isCancelled {
+                await self?.checkForLocationRequest()
+                try? await Task.sleep(for: .seconds(ServerConfig.locationRequestPollInterval))
+            }
+        }
+    }
+
+    func stopLocationRequestPolling() {
+        pollTask?.cancel()
+        pollTask = nil
+    }
+
+    private func checkForLocationRequest() async {
+        do {
+            let response = try await APIClient.shared.checkLocationRequest()
+            guard response.pending, let requestId = response.requestId else { return }
+
+            // Get a fresh reading
+            let location: CLLocation
+            if let last = lastLocation, Date().timeIntervalSince(last.timestamp) < 60 {
+                location = last
+            } else if let last = lastLocation {
+                location = last
+            } else {
+                return
+            }
+
+            let deviceLocation = DeviceLocation(from: location)
+            let _: ServerResponse = try await APIClient.shared.respondToLocationRequest(deviceLocation, requestId: requestId)
+        } catch {
+            // Silently ignore poll failures
+        }
+    }
+
     // MARK: - Background/Foreground Switching
 
     @objc private func appDidEnterBackground() {
