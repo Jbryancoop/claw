@@ -61,6 +61,7 @@
 		B10020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10021 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		B10030 /* Claw.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Claw.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10033 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		B10031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10032 /* Claw.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Claw.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,6 +80,7 @@
 		D10001 = {
 			isa = PBXGroup;
 			children = (
+				B10033 /* Secrets.xcconfig */,
 				D10002 /* Claw */,
 				D10010 /* Products */,
 			);
@@ -344,6 +346,7 @@
 		};
 		G10003 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B10033 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -379,6 +382,7 @@
 		};
 		G10004 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B10033 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -20,7 +20,7 @@
             <key>Key</key>
             <string>server_url</string>
             <key>DefaultValue</key>
-            <string>https://chedev.tailc8b91a.ts.net/api</string>
+            <string></string>
             <key>IsSecure</key>
             <false/>
             <key>KeyboardType</key>

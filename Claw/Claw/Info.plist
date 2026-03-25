@@ -7,6 +7,10 @@
 		<string>location</string>
 		<string>remote-notification</string>
 	</array>
+	<key>ClawServerURL</key>
+	<string>$(CLAW_SERVER_URL)</string>
+	<key>ClawAPIToken</key>
+	<string>$(CLAW_API_TOKEN)</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Claw uses the microphone for voice commands to Larry.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

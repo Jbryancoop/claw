@@ -3,26 +3,34 @@ import Foundation
 struct ServerConfig {
     // MARK: - Server URL
 
-    private static let defaultBaseURL = "https://chedev.tailc8b91a.ts.net/api"
-    private static let defaultAPIToken = "wUk-4_b3nD_sAmmFyNAfJVFiZ9xzS68rF1GLiIQg5pQ"
+    private static let bundleBaseURL = Bundle.main.object(forInfoDictionaryKey: "ClawServerURL") as? String ?? ""
+    private static let bundleAPIToken = Bundle.main.object(forInfoDictionaryKey: "ClawAPIToken") as? String ?? ""
 
     static var baseURL: URL {
+        // Settings app override > xcconfig > fallback
         if let urlString = UserDefaults.standard.string(forKey: "server_url"),
            !urlString.isEmpty,
            let url = URL(string: urlString) {
             return url
         }
-        return URL(string: defaultBaseURL)!
+        if !bundleBaseURL.isEmpty, let url = URL(string: bundleBaseURL) {
+            return url
+        }
+        return URL(string: "http://localhost:3001")!
     }
 
     // MARK: - API Token
 
     static var apiToken: String {
+        // Settings app override > xcconfig > empty
         if let token = UserDefaults.standard.string(forKey: "api_token"),
            !token.isEmpty {
             return token
         }
-        return defaultAPIToken
+        if !bundleAPIToken.isEmpty {
+            return bundleAPIToken
+        }
+        return ""
     }
 
     // MARK: - Endpoints
