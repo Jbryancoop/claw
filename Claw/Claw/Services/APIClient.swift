@@ -74,6 +74,11 @@ actor APIClient {
         try await request(url: ServerConfig.statusURL, method: "GET")
     }
 
+    func pollCommandStatus(jobId: String) async throws -> JobStatusResponse {
+        let url = ServerConfig.baseURL.appending(path: "api/command/\(jobId)")
+        return try await request(url: url, method: "GET")
+    }
+
     func checkLocationRequest() async throws -> LocationRequestResponse {
         try await request(url: ServerConfig.locationRequestURL, method: "GET")
     }

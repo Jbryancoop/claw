@@ -81,23 +81,27 @@ struct DevView: View {
                 .padding(.top, 4)
 
             List(viewModel.logs) { entry in
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(entry.message)
-                            .font(.system(.caption, design: .monospaced))
-                            .fontWeight(.medium)
-                            .foregroundStyle(ClawTheme.accent)
-                            .lineLimit(1)
-                        Spacer()
-                        Text(formatTimestamp(entry.timestamp))
-                            .font(.system(.caption2, design: .monospaced))
-                            .foregroundStyle(ClawTheme.textTertiary)
-                    }
-                    if let data = entry.data, !data.isEmpty {
-                        Text(data)
-                            .font(.system(.caption2, design: .monospaced))
-                            .foregroundStyle(ClawTheme.textSecondary)
-                            .lineLimit(3)
+                NavigationLink {
+                    LogDetailView(entry: entry)
+                } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(entry.message)
+                                .font(.system(.caption, design: .monospaced))
+                                .fontWeight(.medium)
+                                .foregroundStyle(ClawTheme.accent)
+                                .lineLimit(1)
+                            Spacer()
+                            Text(formatTimestamp(entry.timestamp))
+                                .font(.system(.caption2, design: .monospaced))
+                                .foregroundStyle(ClawTheme.textTertiary)
+                        }
+                        if let data = entry.data, !data.isEmpty {
+                            Text(data)
+                                .font(.system(.caption2, design: .monospaced))
+                                .foregroundStyle(ClawTheme.textSecondary)
+                                .lineLimit(3)
+                        }
                     }
                 }
                 .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
@@ -225,5 +229,70 @@ struct DevView: View {
         if bytes < 1024 { return "\(bytes) B" }
         if bytes < 1024 * 1024 { return String(format: "%.1f KB", Double(bytes) / 1024) }
         return String(format: "%.1f MB", Double(bytes) / (1024 * 1024))
+    }
+}
+
+// MARK: - Log Detail
+
+struct LogDetailView: View {
+    let entry: LogEntry
+
+    private var prettyData: String {
+        guard let raw = entry.data, !raw.isEmpty else { return "" }
+        // Try to pretty-print JSON
+        if let jsonData = raw.data(using: .utf8),
+           let obj = try? JSONSerialization.jsonObject(with: jsonData),
+           let pretty = try? JSONSerialization.data(withJSONObject: obj, options: [.prettyPrinted, .sortedKeys]),
+           let str = String(data: pretty, encoding: .utf8) {
+            return str
+        }
+        return raw
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                // Timestamp
+                HStack {
+                    Image(systemName: "clock")
+                        .foregroundStyle(ClawTheme.textTertiary)
+                    Text(entry.timestamp)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(ClawTheme.textSecondary)
+                }
+
+                // Message
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Message")
+                        .font(.caption)
+                        .foregroundStyle(ClawTheme.textTertiary)
+                    Text(entry.message)
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundStyle(ClawTheme.accent)
+                        .textSelection(.enabled)
+                }
+
+                // Data payload
+                if !prettyData.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Data")
+                            .font(.caption)
+                            .foregroundStyle(ClawTheme.textTertiary)
+                        Text(prettyData)
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(ClawTheme.textPrimary)
+                            .textSelection(.enabled)
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(ClawTheme.surfaceElevated)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                }
+            }
+            .padding()
+        }
+        .background(ClawTheme.background)
+        .navigationTitle("Log Entry")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

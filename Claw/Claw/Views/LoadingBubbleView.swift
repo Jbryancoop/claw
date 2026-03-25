@@ -1,44 +1,73 @@
 import SwiftUI
 
-struct LoadingBubbleView: View {
-    @State private var animating = false
+struct AgentStep: Codable, Equatable {
+    let message: String
+    let timestamp: String
+}
 
-    private let dotSize: CGFloat = 8
-    private let dotCount = 3
+/// Shows real-time agent progress
+struct LoadingBubbleView: View {
+    let steps: [AgentStep]
+    let elapsedSeconds: Int
 
     var body: some View {
         HStack {
-            HStack(spacing: 6) {
-                ForEach(0..<dotCount, id: \.self) { index in
-                    Circle()
-                        .fill(ClawTheme.accent)
-                        .frame(width: dotSize, height: dotSize)
-                        .offset(y: animating ? -6 : 0)
-                        .animation(
-                            .easeInOut(duration: 0.45)
-                                .repeatForever(autoreverses: true)
-                                .delay(Double(index) * 0.15),
-                            value: animating
-                        )
+            VStack(alignment: .leading, spacing: 6) {
+                // Current status with spinner
+                HStack(spacing: 8) {
+                    ProgressView()
+                        .tint(ClawTheme.accent)
+                        .scaleEffect(0.8)
+
+                    Text(currentStatus)
+                        .font(.system(.callout, design: .monospaced))
+                        .foregroundStyle(ClawTheme.accent)
+                        .lineLimit(1)
                 }
+
+                // Recent completed steps (last 3)
+                if steps.count > 1 {
+                    let pastSteps = steps.dropLast().suffix(3)
+                    ForEach(Array(pastSteps.enumerated()), id: \.offset) { _, step in
+                        HStack(spacing: 6) {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(ClawTheme.accentDim)
+                            Text(step.message)
+                                .font(.system(.caption2, design: .monospaced))
+                                .foregroundStyle(ClawTheme.textTertiary)
+                                .lineLimit(1)
+                        }
+                    }
+                }
+
+                // Elapsed time
+                Text("\(elapsedSeconds)s elapsed")
+                    .font(.system(.caption2, design: .monospaced))
+                    .foregroundStyle(ClawTheme.textTertiary)
             }
             .padding(.horizontal, 14)
-            .padding(.vertical, 14)
+            .padding(.vertical, 10)
             .background(ClawTheme.serverBubble)
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
             Spacer(minLength: 60)
         }
-        .onAppear {
-            animating = true
-        }
+    }
+
+    private var currentStatus: String {
+        steps.last?.message ?? "Connecting to agent..."
     }
 }
 
 #Preview {
     ZStack {
         ClawTheme.background.ignoresSafeArea()
-        LoadingBubbleView()
-            .padding()
+        LoadingBubbleView(steps: [
+            AgentStep(message: "Querying Home Assistant...", timestamp: ""),
+            AgentStep(message: "Checking Tesla status...", timestamp: ""),
+            AgentStep(message: "Generating response...", timestamp: ""),
+        ], elapsedSeconds: 4)
+        .padding()
     }
 }

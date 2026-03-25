@@ -7,10 +7,14 @@ final class ChatViewModel: ObservableObject {
         didSet { saveMessages() }
     }
     @Published var isLoading: Bool = false
+    @Published var agentSteps: [AgentStep] = []
+    @Published var elapsedSeconds: Int = 0
 
     weak var locationManager: LocationManager?
 
     private static let storageKey = "chat_history"
+    private var pollTimer: Timer?
+    private var elapsedTimer: Timer?
 
     init() {
         loadMessages()
@@ -20,7 +24,8 @@ final class ChatViewModel: ObservableObject {
         let userMessage = Message(role: .user, content: text)
         messages.append(userMessage)
         isLoading = true
-        defer { isLoading = false }
+        agentSteps = []
+        elapsedSeconds = 0
 
         let location: DeviceLocation? = if let loc = locationManager?.lastLocation {
             DeviceLocation(from: loc)
@@ -28,14 +33,63 @@ final class ChatViewModel: ObservableObject {
             nil
         }
 
+        // Start elapsed timer
+        elapsedTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.elapsedSeconds += 1 }
+        }
+
         do {
-            let response = try await ChatService.send(command: text, location: location)
-            let serverMessage = Message(role: .server, content: response)
-            messages.append(serverMessage)
+            // Submit command — server returns jobId immediately
+            let jobResponse = try await APIClient.shared.sendCommand(text, location: location)
+
+            if let jobId = jobResponse.jobId {
+                // Poll for progress
+                let response = try await pollForCompletion(jobId: jobId)
+                let serverMessage = Message(role: .server, content: response)
+                messages.append(serverMessage)
+            } else if let response = jobResponse.response {
+                // Legacy sync response (fallback)
+                let serverMessage = Message(role: .server, content: response)
+                messages.append(serverMessage)
+            } else {
+                let serverMessage = Message(role: .server, content: "(no response)")
+                messages.append(serverMessage)
+            }
         } catch {
             let errorMessage = Message(role: .server, content: "Error: \(error.localizedDescription)")
             messages.append(errorMessage)
         }
+
+        stopTimers()
+        isLoading = false
+    }
+
+    private func pollForCompletion(jobId: String) async throws -> String {
+        while true {
+            try await Task.sleep(for: .milliseconds(800))
+
+            let status = try await APIClient.shared.pollCommandStatus(jobId: jobId)
+
+            if let steps = status.job?.steps {
+                self.agentSteps = steps
+            }
+
+            switch status.job?.status {
+            case "complete":
+                return status.job?.response ?? "(no response)"
+            case "error":
+                throw ChatError.serverRejected(status.job?.error ?? "Unknown error")
+            default:
+                continue // still running
+            }
+        }
+    }
+
+    private func stopTimers() {
+        elapsedTimer?.invalidate()
+        elapsedTimer = nil
+        agentSteps = []
+        elapsedSeconds = 0
     }
 
     func deleteMessage(_ id: UUID) {

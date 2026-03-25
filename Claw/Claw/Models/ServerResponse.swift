@@ -15,6 +15,24 @@ struct CommandResponse: Decodable {
     let ok: Bool
     let response: String?
     let error: String?
+    let jobId: String?
+}
+
+struct JobStatusResponse: Decodable {
+    let ok: Bool
+    let job: JobInfo?
+    let error: String?
+}
+
+struct JobInfo: Decodable {
+    let id: String
+    let status: String
+    let steps: [AgentStep]?
+    let response: String?
+    let error: String?
+    let command: String?
+    let startedAt: String?
+    let elapsedMs: Int?
 }
 
 struct CommandPayload: Encodable {

@@ -19,9 +19,12 @@ struct ChatView: View {
                             }
 
                             if viewModel.isLoading {
-                                LoadingBubbleView()
-                                    .id("loading-indicator")
-                                    .transition(.opacity)
+                                LoadingBubbleView(
+                                    steps: viewModel.agentSteps,
+                                    elapsedSeconds: viewModel.elapsedSeconds
+                                )
+                                .id("loading-indicator")
+                                .transition(.opacity)
                             }
                         }
                         .padding(.horizontal)
