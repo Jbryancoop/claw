@@ -1,0 +1,21 @@
+included:
+  - Claw
+
+excluded:
+  - Claw.xcodeproj
+
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - function_body_length
+  - type_body_length
+  - file_length
+  - cyclomatic_complexity
+  - nesting
+  - identifier_name
+
+opt_in_rules:
+  - empty_count
+  - closure_spacing
+  - force_unwrapping
+  - implicitly_unwrapped_optional
