@@ -4,6 +4,7 @@ struct ChatView: View {
     @EnvironmentObject var viewModel: ChatViewModel
     @StateObject private var voiceManager = VoiceManager()
     @State private var inputText: String = ""
+    @State private var backgroundMode: Bool = false
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -49,6 +50,24 @@ struct ChatView: View {
                     }
                 }
 
+                // Background mode toggle (above input bar)
+                if !inputText.isEmpty {
+                    HStack {
+                        Image(systemName: backgroundMode ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(backgroundMode ? ClawTheme.accent : ClawTheme.textTertiary)
+                        Text("Run in background & notify")
+                            .font(.caption)
+                            .foregroundStyle(ClawTheme.textSecondary)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 6)
+                    .background(backgroundMode ? ClawTheme.surfaceElevated : Color.clear)
+                    .onTapGesture {
+                        backgroundMode.toggle()
+                    }
+                }
+                
                 // Input bar
                 HStack(spacing: 8) {
                     // Mic button
@@ -126,8 +145,15 @@ struct ChatView: View {
     private func send() {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
+        let runInBackground = backgroundMode
         inputText = ""
-        Task { await viewModel.send(text) }
+        backgroundMode = false
+        
+        if runInBackground {
+            Task { await viewModel.sendInBackground(text) }
+        } else {
+            Task { await viewModel.send(text) }
+        }
     }
 }
 
