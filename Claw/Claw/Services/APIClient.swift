@@ -69,6 +69,12 @@ actor APIClient {
         let payload = CommandPayload(command: command, location: location)
         return try await request(url: ServerConfig.commandURL, method: "POST", body: payload)
     }
+    
+    func sendBackgroundCommand(_ command: String, location: DeviceLocation? = nil) async throws -> ServerResponse {
+        let payload = CommandPayload(command: command, location: location)
+        let url = ServerConfig.baseURL.appending(path: "api/command/background")
+        return try await request(url: url, method: "POST", body: payload)
+    }
 
     func checkStatus() async throws -> ServerResponse {
         try await request(url: ServerConfig.statusURL, method: "GET")

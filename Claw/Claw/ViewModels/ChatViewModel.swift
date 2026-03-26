@@ -63,6 +63,34 @@ final class ChatViewModel: ObservableObject {
         stopTimers()
         isLoading = false
     }
+    
+    func sendInBackground(_ text: String) async {
+        // Add user message to history
+        let userMessage = Message(role: .user, content: text, metadata: ["backgroundMode": true])
+        messages.append(userMessage)
+        
+        // Add placeholder message
+        let placeholderMessage = Message(
+            role: .server,
+            content: "⏳ Running in background... You'll receive a notification when complete.",
+            metadata: ["isPlaceholder": true]
+        )
+        messages.append(placeholderMessage)
+        
+        let location: DeviceLocation? = if let loc = locationManager?.lastLocation {
+            DeviceLocation(from: loc)
+        } else {
+            nil
+        }
+        
+        // Submit to background endpoint (server will handle notification)
+        do {
+            try await APIClient.shared.sendBackgroundCommand(text, location: location)
+        } catch {
+            let errorMessage = Message(role: .server, content: "Background task failed: \(error.localizedDescription)")
+            messages.append(errorMessage)
+        }
+    }
 
     private func pollForCompletion(jobId: String) async throws -> String {
         while true {
