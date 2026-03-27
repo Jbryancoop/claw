@@ -3,6 +3,7 @@ import SwiftUI
 struct ChatView: View {
     @EnvironmentObject var viewModel: ChatViewModel
     @State private var inputText: String = ""
+    @State private var isAtBottom: Bool = true
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -10,15 +11,40 @@ struct ChatView: View {
             VStack(spacing: 0) {
                 // Messages
                 ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 8) {
-                            ForEach(viewModel.messages) { message in
-                                ChatBubbleView(message: message)
-                                    .id(message.id)
+                    ZStack(alignment: .bottomTrailing) {
+                        ScrollView {
+                            LazyVStack(spacing: 8) {
+                                ForEach(viewModel.messages) { message in
+                                    ChatBubbleView(message: message)
+                                        .id(message.id)
+                                }
+                                // Invisible anchor at the very bottom
+                                Color.clear
+                                    .frame(height: 1)
+                                    .id("bottom")
+                                    .onAppear { isAtBottom = true }
+                                    .onDisappear { isAtBottom = false }
                             }
+                            .padding(.horizontal)
+                            .padding(.top, 8)
                         }
-                        .padding(.horizontal)
-                        .padding(.top, 8)
+
+                        // Scroll-to-bottom button
+                        if !isAtBottom {
+                            Button {
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    proxy.scrollTo("bottom", anchor: .bottom)
+                                }
+                            } label: {
+                                Image(systemName: "arrow.down.circle.fill")
+                                    .font(.title)
+                                    .foregroundStyle(.white, .blue)
+                                    .shadow(radius: 3)
+                            }
+                            .padding(.trailing, 16)
+                            .padding(.bottom, 8)
+                            .transition(.opacity.combined(with: .scale))
+                        }
                     }
                     .onChange(of: viewModel.messages.count) { _, _ in
                         if let last = viewModel.messages.last {
