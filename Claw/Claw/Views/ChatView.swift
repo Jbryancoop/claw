@@ -1,10 +1,15 @@
 import SwiftUI
+import PhotosUI
 
 struct ChatView: View {
     @EnvironmentObject var viewModel: ChatViewModel
     @StateObject private var voiceManager = VoiceManager()
     @State private var inputText: String = ""
     @State private var backgroundMode: Bool = false
+    @State private var showScrollButton = false
+    @State private var selectedPhoto: PhotosPickerItem?
+    @State private var pendingImageData: Data?
+    @State private var pendingImagePreview: UIImage?
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -12,40 +17,73 @@ struct ChatView: View {
             VStack(spacing: 0) {
                 // Messages
                 ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 8) {
-                            ForEach(viewModel.messages) { message in
-                                ChatBubbleView(message: message, voiceManager: voiceManager)
-                                    .id(message.id)
-                            }
+                    ZStack(alignment: .bottomTrailing) {
+                        ScrollView {
+                            LazyVStack(spacing: 8) {
+                                ForEach(viewModel.messages) { message in
+                                    ChatBubbleView(message: message, voiceManager: voiceManager)
+                                        .id(message.id)
+                                }
 
-                            if viewModel.isLoading {
-                                LoadingBubbleView(
-                                    steps: viewModel.agentSteps,
-                                    elapsedSeconds: viewModel.elapsedSeconds
-                                )
-                                .id("loading-indicator")
-                                .transition(.opacity)
+                                if viewModel.isLoading {
+                                    LoadingBubbleView(
+                                        steps: viewModel.agentSteps,
+                                        elapsedSeconds: viewModel.elapsedSeconds
+                                    )
+                                    .id("loading-indicator")
+                                    .transition(.opacity)
+                                }
+
+                                // Invisible anchor at the very bottom
+                                Color.clear.frame(height: 1).id("bottom-anchor")
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 8)
+                        }
+                        .onTapGesture {
+                            isInputFocused = false
+                        }
+                        .onAppear {
+                            // Delay to let messages load from UserDefaults first
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                scrollToBottom(proxy: proxy, animated: false)
                             }
                         }
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                    }
-                    .onTapGesture {
-                        isInputFocused = false
-                    }
-                    .onChange(of: viewModel.messages.count) { _, _ in
-                        if let last = viewModel.messages.last {
-                            withAnimation(.easeOut(duration: 0.2)) {
-                                proxy.scrollTo(last.id, anchor: .top)
+                        .onChange(of: viewModel.messages.count) { old, new in
+                            if new > old {
+                                scrollToBottom(proxy: proxy, animated: true)
                             }
                         }
-                    }
-                    .onChange(of: viewModel.isLoading) { _, isLoading in
-                        if isLoading {
-                            withAnimation(.easeOut(duration: 0.2)) {
-                                proxy.scrollTo("loading-indicator", anchor: .bottom)
+                        .onChange(of: viewModel.isLoading) { _, isLoading in
+                            if isLoading {
+                                scrollToBottom(proxy: proxy, animated: true)
                             }
+                        }
+                        .onScrollGeometryChange(for: Bool.self) { geo in
+                            let distanceFromBottom = geo.contentSize.height - geo.contentOffset.y - geo.containerSize.height
+                            return distanceFromBottom > 80
+                        } action: { old, isScrolledUp in
+                            guard old != isScrolledUp else { return }
+                            withAnimation { showScrollButton = isScrolledUp }
+                        }
+
+                        // Scroll to bottom button
+                        if showScrollButton {
+                            Button {
+                                scrollToBottom(proxy: proxy, animated: true)
+                            } label: {
+                                Image(systemName: "chevron.down")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundStyle(ClawTheme.accent)
+                                    .frame(width: 44, height: 44)
+                                    .background(ClawTheme.surface)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(ClawTheme.border, lineWidth: 1))
+                                    .shadow(color: .black.opacity(0.4), radius: 6, y: 3)
+                            }
+                            .padding(.trailing, 16)
+                            .padding(.bottom, 12)
+                            .transition(.opacity.combined(with: .scale))
                         }
                     }
                 }
@@ -67,7 +105,35 @@ struct ChatView: View {
                         backgroundMode.toggle()
                     }
                 }
-                
+
+                // Image preview (above input bar)
+                if let preview = pendingImagePreview {
+                    HStack {
+                        Image(uiImage: preview)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(ClawTheme.border, lineWidth: 1)
+                            )
+
+                        Button {
+                            pendingImageData = nil
+                            pendingImagePreview = nil
+                            selectedPhoto = nil
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(ClawTheme.textSecondary)
+                        }
+
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 6)
+                }
+
                 // Input bar
                 HStack(spacing: 8) {
                     // Mic button
@@ -84,6 +150,22 @@ struct ChatView: View {
                         Image(systemName: voiceManager.isListening ? "mic.fill" : "mic")
                             .font(.title3)
                             .foregroundStyle(voiceManager.isListening ? .red : ClawTheme.accent)
+                    }
+
+                    // Photo picker
+                    PhotosPicker(selection: $selectedPhoto, matching: .images) {
+                        Image(systemName: pendingImageData != nil ? "photo.fill" : "photo")
+                            .font(.title3)
+                            .foregroundStyle(pendingImageData != nil ? ClawTheme.accent : ClawTheme.textSecondary)
+                    }
+                    .onChange(of: selectedPhoto) { _, newItem in
+                        guard let newItem else { return }
+                        Task {
+                            if let data = try? await newItem.loadTransferable(type: Data.self) {
+                                pendingImageData = data
+                                pendingImagePreview = UIImage(data: data)
+                            }
+                        }
                     }
 
                     TextField(voiceManager.isListening ? "Listening..." : "Send a command...", text: $inputText, axis: .vertical)
@@ -139,21 +221,38 @@ struct ChatView: View {
     }
 
     private var canSend: Bool {
-        !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !viewModel.isLoading
+        let hasText = !inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        let hasImage = pendingImageData != nil
+        return (hasText || hasImage) && !viewModel.isLoading
     }
 
     private func send() {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return }
+        let imageData = pendingImageData
+        guard !text.isEmpty || imageData != nil else { return }
         let runInBackground = backgroundMode
         inputText = ""
         backgroundMode = false
-        
+        pendingImageData = nil
+        pendingImagePreview = nil
+        selectedPhoto = nil
+
         if runInBackground {
-            Task { await viewModel.sendInBackground(text) }
+            Task { await viewModel.sendInBackground(text, imageData: imageData) }
         } else {
-            Task { await viewModel.send(text) }
+            Task { await viewModel.send(text, imageData: imageData) }
         }
+    }
+
+    private func scrollToBottom(proxy: ScrollViewProxy, animated: Bool) {
+        if animated {
+            withAnimation(.easeOut(duration: 0.2)) {
+                proxy.scrollTo("bottom-anchor", anchor: .bottom)
+            }
+        } else {
+            proxy.scrollTo("bottom-anchor", anchor: .bottom)
+        }
+        withAnimation { showScrollButton = false }
     }
 }
 

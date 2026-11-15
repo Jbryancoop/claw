@@ -12,14 +12,26 @@ struct ChatBubbleView: View {
             if isUser { Spacer(minLength: 60) }
 
             VStack(alignment: isUser ? .trailing : .leading, spacing: 2) {
-                Group {
-                    if isUser {
-                        Text(message.content)
-                    } else {
-                        MarkdownView(message.content, font: .callout)
+                VStack(alignment: .leading, spacing: 6) {
+                    if let uiImage = message.image {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 220, maxHeight: 220)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+
+                    if !message.content.isEmpty {
+                        Group {
+                            if isUser {
+                                Text(message.content)
+                            } else {
+                                MarkdownView(message.content, font: .callout)
+                            }
+                        }
+                        .textSelection(.enabled)
                     }
                 }
-                .textSelection(.enabled)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .background(isUser ? ClawTheme.userBubble : ClawTheme.serverBubble)

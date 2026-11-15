@@ -65,14 +65,20 @@ actor APIClient {
         return response
     }
 
-    func sendCommand(_ command: String, location: DeviceLocation? = nil) async throws -> CommandResponse {
+    func sendCommand(_ command: String, location: DeviceLocation? = nil, imageData: Data? = nil) async throws -> CommandResponse {
+        if let imageData {
+            return try await multipartRequest(url: ServerConfig.commandURL, command: command, location: location, imageData: imageData)
+        }
         let payload = CommandPayload(command: command, location: location)
         return try await request(url: ServerConfig.commandURL, method: "POST", body: payload)
     }
-    
-    func sendBackgroundCommand(_ command: String, location: DeviceLocation? = nil) async throws -> ServerResponse {
+
+    func sendBackgroundCommand(_ command: String, location: DeviceLocation? = nil, imageData: Data? = nil) async throws -> ServerResponse {
+        let url = ServerConfig.baseURL.appending(path: "command/background")
+        if let imageData {
+            return try await multipartRequest(url: url, command: command, location: location, imageData: imageData)
+        }
         let payload = CommandPayload(command: command, location: location)
-        let url = ServerConfig.baseURL.appending(path: "api/command/background")
         return try await request(url: url, method: "POST", body: payload)
     }
 
@@ -81,7 +87,7 @@ actor APIClient {
     }
 
     func pollCommandStatus(jobId: String) async throws -> JobStatusResponse {
-        let url = ServerConfig.baseURL.appending(path: "api/command/\(jobId)")
+        let url = ServerConfig.baseURL.appending(path: "command/\(jobId)")
         return try await request(url: url, method: "GET")
     }
 
@@ -129,6 +135,63 @@ actor APIClient {
         try await request(url: ServerConfig.chatsURL, method: "GET")
     }
 
+    // MARK: - Multipart Upload
+
+    private func multipartRequest<T: Decodable>(
+        url: URL,
+        command: String,
+        location: DeviceLocation?,
+        imageData: Data
+    ) async throws -> T {
+        let boundary = "Boundary-\(UUID().uuidString)"
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        let token = ServerConfig.apiToken
+        if !token.isEmpty {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        var body = Data()
+
+        // Command field
+        body.appendMultipart(boundary: boundary, name: "command", value: command)
+
+        // Location fields
+        if let location {
+            if let locationJSON = try? encoder.encode(location) {
+                body.appendMultipart(boundary: boundary, name: "location", value: String(data: locationJSON, encoding: .utf8) ?? "")
+            }
+        }
+
+        // Image file
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"image\"; filename=\"photo.jpg\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+        body.append(imageData)
+        body.append("\r\n".data(using: .utf8)!)
+
+        // Close
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+
+        request.httpBody = body
+
+        let (data, response) = try await session.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let message = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw APIError.serverError(statusCode: httpResponse.statusCode, message: message)
+        }
+
+        return try decoder.decode(T.self, from: data)
+    }
+
     // MARK: - TTS
 
     func requestTTS(_ text: String) async throws -> Data {
@@ -161,6 +224,16 @@ enum APIError: LocalizedError {
         case .serverError(let code, let message):
             return "Server error \(code): \(message)"
         }
+    }
+}
+
+// MARK: - Multipart Helpers
+
+private extension Data {
+    mutating func appendMultipart(boundary: String, name: String, value: String) {
+        append("--\(boundary)\r\n".data(using: .utf8)!)
+        append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
+        append("\(value)\r\n".data(using: .utf8)!)
     }
 }
 

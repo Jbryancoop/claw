@@ -35,16 +35,16 @@ struct ServerConfig {
 
     // MARK: - Endpoints
 
-    static var locationURL: URL { baseURL.appending(path: "api/location") }
-    static var deviceTokenURL: URL { baseURL.appending(path: "api/device-token") }
-    static var commandURL: URL { baseURL.appending(path: "api/command") }
-    static var statusURL: URL { baseURL.appending(path: "api/status") }
-    static var locationRequestURL: URL { baseURL.appending(path: "api/location/request") }
-    static var notificationsURL: URL { baseURL.appending(path: "api/notifications") }
-    static func notificationURL(id: String) -> URL { baseURL.appending(path: "api/notifications/\(id)") }
-    static var ttsURL: URL { baseURL.appending(path: "api/tts") }
-    static var logsURL: URL { baseURL.appending(path: "api/logs") }
-    static var statsURL: URL { baseURL.appending(path: "api/stats") }
+    static var locationURL: URL { baseURL.appending(path: "location") }
+    static var deviceTokenURL: URL { baseURL.appending(path: "device-token") }
+    static var commandURL: URL { baseURL.appending(path: "command") }
+    static var statusURL: URL { baseURL.appending(path: "status") }
+    static var locationRequestURL: URL { baseURL.appending(path: "location/request") }
+    static var notificationsURL: URL { baseURL.appending(path: "notifications") }
+    static func notificationURL(id: String) -> URL { baseURL.appending(path: "notifications/\(id)") }
+    static var ttsURL: URL { baseURL.appending(path: "tts") }
+    static var logsURL: URL { baseURL.appending(path: "logs") }
+    static var statsURL: URL { baseURL.appending(path: "stats") }
     static var chatsURL: URL { baseURL.appending(path: "api/chats") }
 
     /// How often (seconds) the app polls the server for location requests.
